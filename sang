@@ -1,0 +1,30 @@
+compile 'com.journeyapps:zxing-android-embedded:3.5.0'
+public class AnyOrientationCaptureActivity extends CaptureActivity {}
+<activity
+            android:name=".AnyOrientationCaptureActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+  private CaptureManager capture;
+  private DecoratedBarcodeView barcodeScannerView;
+barcodeScannerView = (DecoratedBarcodeView)findViewById(R.id.zxing_barcode_scanner);
+barcodeScannerView.setTorchListener(this);
+        capture = new CaptureManager(this, barcodeScannerView);
+        capture.initializeFromIntent(getIntent(), savedInstanceState);
+        capture.decode();
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setCaptureActivity(CustomScannerActivity.class);
+        integrator.initiateScan();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.d("onActivityResult", "onActivityResult: .");
+        if (resultCode == Activity.RESULT_OK) {
+            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+            String re = scanResult.getContents();
+            String message = re;
+            Log.d("onActivityResult", "onActivityResult: ." + re);
+            Toast.makeText(this, re, Toast.LENGTH_LONG).show();
+        }
+    }
+       
